@@ -1,0 +1,104 @@
+{
+    "oKnowLedgeBase": [
+        {
+            "kCategory": "Core",
+            "kErrorText": "useless for the following reason",
+            "kDescription": [
+                {
+                    "dProblem": "User's PC is out of sync",
+                    "dSolution": "In order to fix this, user will need to synce their time with their clock.\n",
+                    "dLocale": "En"
+                },
+                {
+                    "dProblem": "時間の同期がずれている",
+                    "dSolution": "この場合には以下の操作を行ってください。\n",
+                    "dLocale": "Ja"
+                }
+            ],
+            "kErrorCode": "TimeOutSync"
+        },
+        {
+            "kCategory": "Network",
+            "kErrorText": "Resource vanished",
+            "kDescription": [
+                {
+                    "dProblem": "Firewall blocking the connection",
+                    "dSolution": "In order to fix this, user will need to synce their time with their clock.\n",
+                    "dLocale": "En"
+                },
+                {
+                    "dProblem": "ファイアウォールが遮断している",
+                    "dSolution": "この場合には以下の操作を行ってください。\n",
+                    "dLocale": "Ja"
+                }
+            ],
+            "kErrorCode": "NetworkError"
+        },
+        {
+            "kCategory": "Backend",
+            "kErrorText": "cannot create dir",
+            "kDescription": [
+                {
+                    "dProblem": "User is using non-latin characters",
+                    "dSolution": "In order to fix this, user needs to change their time to latin-characters.\n",
+                    "dLocale": "En"
+                },
+                {
+                    "dProblem": "半角英数字以外の文字を使っている",
+                    "dSolution": "この場合には以下の操作を行ってください。\n",
+                    "dLocale": "Ja"
+                }
+            ],
+            "kErrorCode": "DBPath"
+        }
+    ],
+    "oKnowledgeNum": 3,
+    "oQAndA": [
+        {
+            "qCategory": "Daedalus",
+            "qDescription": [
+                {
+                    "qLocale": "En",
+                    "qQuetion": "Will there be light client support?",
+                    "qAnswer": "We're currently working on it.\n"
+                },
+                {
+                    "qLocale": "Ja",
+                    "qQuetion": "ライトクライアントへのサポート対応は検討していますか",
+                    "qAnswer": "現在開発中です。\n"
+                }
+            ]
+        },
+        {
+            "qCategory": "Cardano",
+            "qDescription": [
+                {
+                    "qLocale": "En",
+                    "qQuetion": "Is there blockchain explorer available?",
+                    "qAnswer": "Please visit https://google.co.jp\n"
+                },
+                {
+                    "qLocale": "Ja",
+                    "qQuetion": "ブロックチェーンエクスプローラーはありますか",
+                    "qAnswer": "はい公開されています。\n"
+                }
+            ]
+        },
+        {
+            "qCategory": "Cardano",
+            "qDescription": [
+                {
+                    "qLocale": "En",
+                    "qQuetion": "Please tell me how transaction works",
+                    "qAnswer": "This is how it works\n"
+                },
+                {
+                    "qLocale": "Ja",
+                    "qQuetion": "トランザクションの仕組みについて教えてください",
+                    "qAnswer": "仕組みはこうなっています。\n"
+                }
+            ]
+        }
+    ],
+    "oQuestionNum": 3
+}
