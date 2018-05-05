@@ -1,6 +1,3 @@
-#### ErrorCode
-TimeOutSync
-#### Category
-Core
-#### ErrorText
-useless for the following reason
+errorcode: TimeOutSync
+category:  Core
+errorText: useless for the following reason
