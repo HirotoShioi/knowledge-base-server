@@ -3,10 +3,10 @@ module Parser.Question
        parseQuestion
      ) where
 
-import qualified Data.Text.Lazy      as LT
+import qualified Data.Text.Lazy as LT
 
 import           Exceptions
-import           Parser.Util
+import           Parser.Util    (parseCategory, parseLocale)
 import           Types
 
 -- | Parse description
@@ -27,5 +27,10 @@ parseQDesc txt = do
 parseQuestion :: [LT.Text] -> LT.Text -> Either KBError Question
 parseQuestion ds metadata = do
     descriptions <- mapM parseQDesc ds
-    category     <- parseCategory $ head $ LT.lines metadata
+    category <- parseMetaDatas $ LT.lines metadata
     return       $ Question category descriptions
+
+-- | Parse metadata
+parseMetaDatas :: [LT.Text] -> Either KBError Category
+parseMetaDatas (cat:_) = parseCategory cat
+parseMetaDatas _       = Left InvalidFormat

@@ -1,6 +1,3 @@
-#### ErrorCode
-DBPath
-#### Category
-Backend
-#### ErrorText
-cannot create dir
+errorcode: DBPath
+category: Backend
+errortext: cannot create dir

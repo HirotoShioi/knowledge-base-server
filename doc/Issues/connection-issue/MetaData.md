@@ -1,6 +1,3 @@
-#### ErrorCode
-NetworkError
-#### Category
-Network
-#### ErrorText
-Resource vanished
+errorcode: NetworkError
+category:  Network
+errortext: Resource vanished

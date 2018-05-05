@@ -1,13 +1,15 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Parser.Knowledge
     (
       parseKnowledge
     ) where
 
-import qualified Data.Text.Lazy      as LT
+import qualified Data.Text.Lazy as LT
 
 import           Exceptions
-import           Parser.Util
-import           Types
+import           Parser.Util    (parseCategory, parseLocale, parseMetadata)
+import           Types          (Category, KDescription (..), Knowledge (..))
 
 -- | Parse description
 parseKDesc' :: LT.Text -> Either KBError (LT.Text, LT.Text, LT.Text)
@@ -23,9 +25,12 @@ parseKDesc txt = do
     return $ KDescription parsedLocale problem solution
 
 -- | Parse knowledge's meta data
-parseKnowledgeMeta :: LT.Text -> Either KBError (LT.Text, LT.Text, LT.Text)
+parseKnowledgeMeta :: LT.Text -> Either KBError (LT.Text, Category, LT.Text)
 parseKnowledgeMeta txt = case LT.lines txt of
-                             (_:eCode:_:eCategory:_:eText:_) ->
+                             (err:ecat:etxt:_) -> do
+                                  eCategory <- parseCategory ecat
+                                  eCode     <- parseMetadata "errorcode" err
+                                  eText     <- parseMetadata "errortext" etxt
                                   return (eCode, eCategory, eText)
                              _               -> Left InvalidFormat
 
@@ -34,5 +39,4 @@ parseKnowledge :: [LT.Text] -> LT.Text -> Either KBError Knowledge
 parseKnowledge ds metadata = do
     descriptions <- mapM parseKDesc ds
     (eCode, eCategory, eText) <- parseKnowledgeMeta metadata
-    category <- parseCategory eCategory
-    return $ Knowledge eCode category eText descriptions
+    return $ Knowledge eCode eCategory eText descriptions

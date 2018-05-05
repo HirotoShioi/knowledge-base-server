@@ -11,8 +11,8 @@ import qualified Data.Text.Lazy   as LT
 
 import           Exceptions
 
-import           Parser.Knowledge
-import           Parser.Question
+import           Parser.Knowledge (parseKnowledge)
+import           Parser.Question  (parseQuestion)
 
 newtype MdParser a = MdParser {runParser :: [LT.Text] -> LT.Text -> Either KBError a }
 
