@@ -13,11 +13,12 @@ import           Data.Time                (getCurrentTime)
 import           Network.Wai.Handler.Warp (run)
 import           Servant
 import           System.Directory         (listDirectory)
+import           System.ReadEnvVar        (readEnvDef)
 
 import           API                      (Knowledgebase, api)
 import           Exceptions
-import           Parser.Parser            (Parser (..), parseKnowledge,
-                                           parseQuestion)
+import           Parser.Parser            (MdParser, mdParser, parseKnowledge,
+                                           parseQuestion, runParser)
 import           Types                    (Knowledge, Output (..),
                                            Question (..))
 
@@ -43,7 +44,7 @@ descPath :: FilePath -> [FilePath]
 descPath path = map (\ f -> path <> "/" <> f <> ".md") ["en", "ja"]
 
 -- | Parse each file
-parseFiles :: Parser a -> FilePath -> IO a
+parseFiles :: MdParser a -> FilePath -> IO a
 parseFiles parser path = do
     descFiles    <- mapM LT.readFile $ descPath path
     categoryFile <- LT.readFile $ metaDataPath path
@@ -53,14 +54,15 @@ parseFiles parser path = do
         Right parsedData -> return parsedData
 
 -- | Parse directory
-parseDirectory :: Parser a -> FilePath -> IO [a]
+parseDirectory :: MdParser a -> FilePath -> IO [a]
 parseDirectory parser path = do
     pContent <- listDirectory path
-    let contentPaths = (path ++) <$> pContent
+    let filteredContent = filter (\dir -> head dir /= '.') pContent -- Some reason heroku adds strange file..
+        contentPaths = (path ++) <$> filteredContent
     mapM (parseFiles parser) contentPaths
 
 -- | Given directory, parse them using the parser and return list of parsed datas.
-generateData :: Parser a -> FilePath -> IO [a]
+generateData :: MdParser a -> FilePath -> IO [a]
 generateData parser path = do
     putStrLn $ "Parsing markdowns on: " <> path
     parsedData <- parseDirectory parser path
@@ -83,11 +85,11 @@ getOutput xs = do
 
 main :: IO ()
 main = do
-    knowledge  <- generateData (Parser parseKnowledge) knowledgeDir
+    knowledge  <- generateData (mdParser parseKnowledge) knowledgeDir
     tKnowledge <- newTVarIO knowledge
-    questions  <- generateData (Parser parseQuestion) questionDir
+    questions  <- generateData (mdParser parseQuestion) questionDir
     tQuestions <- newTVarIO questions
+    port       <- readEnvDef "PORT" 8080
     let config = Config tKnowledge tQuestions
-        port   = 8080
     putStrLn $ "Starting the server at: " <> show port
     run port $ serve api (server config)

@@ -1,6 +1,8 @@
 module Parser.Parser
     (
-      Parser(..)
+      MdParser
+    , runParser
+    , mdParser
     , parseKnowledge
     , parseQuestion
     ) where
@@ -12,4 +14,7 @@ import           Exceptions
 import           Parser.Knowledge
 import           Parser.Question
 
-newtype Parser a = Parser {runParser :: [LT.Text] -> LT.Text -> Either KBError a }
+newtype MdParser a = MdParser {runParser :: [LT.Text] -> LT.Text -> Either KBError a }
+
+mdParser :: ([LT.Text] -> LT.Text -> Either KBError a) -> MdParser a
+mdParser = MdParser
