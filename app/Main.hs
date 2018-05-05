@@ -4,7 +4,6 @@
 
 module Main where
 
-import           Control.Concurrent.STM
 import           Control.Exception.Safe   (throw)
 import           Control.Monad.IO.Class   (liftIO)
 import           Data.Semigroup           ((<>))
@@ -23,8 +22,8 @@ import           Types                    (Knowledge, Output (..),
                                            Question (..))
 
 data Config = Config
-    { cfgKnowledge :: TVar [Knowledge]
-    , cfgQuestion  :: TVar [Question]
+    { cfgKnowledge :: ![Knowledge]
+    , cfgQuestion  :: ![Question]
     }
 
 -- | Path to knowledge directory
@@ -57,7 +56,8 @@ parseFiles parser path = do
 parseDirectory :: MdParser a -> FilePath -> IO [a]
 parseDirectory parser path = do
     pContent <- listDirectory path
-    let filteredContent = filter (\dir -> head dir /= '.') pContent -- Some reason heroku adds strange file..
+        -- Ignore file that starts with '.'
+    let filteredContent = filter (\dir -> head dir /= '.') pContent
         contentPaths = (path ++) <$> filteredContent
     mapM (parseFiles parser) contentPaths
 
@@ -76,20 +76,17 @@ server Config{..} =
     :<|> getOutput cfgQuestion
 
 -- | Create output data that server returns
-getOutput :: TVar [a] -> Handler (Output a)
+getOutput :: [a] -> Handler (Output a)
 getOutput xs = do
-    datas    <- liftIO $ readTVarIO xs
     currTime <- liftIO getCurrentTime
-    let oNum = length datas
-    return $ Output currTime datas oNum
+    let oNum = length xs
+    return $ Output currTime xs oNum
 
 main :: IO ()
 main = do
     knowledge  <- generateData (mdParser parseKnowledge) knowledgeDir
-    tKnowledge <- newTVarIO knowledge
     questions  <- generateData (mdParser parseQuestion) questionDir
-    tQuestions <- newTVarIO questions
     port       <- readEnvDef "PORT" 8080
-    let config = Config tKnowledge tQuestions
+    let config = Config knowledge questions
     putStrLn $ "Starting the server at: " <> show port
     run port $ serve api (server config)

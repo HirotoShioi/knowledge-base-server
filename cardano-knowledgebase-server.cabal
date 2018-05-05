@@ -66,7 +66,6 @@ executable cardano-knowledgebase-server-api
     , read-env-var
     , safe-exceptions
     , servant-server
-    , stm
     , text
     , time
     , warp
