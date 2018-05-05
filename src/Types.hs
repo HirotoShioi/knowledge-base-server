@@ -1,8 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 module Types 
-    ( 
-      Category(..)
+    ( Category(..)
     , KDescription(..)
     , Knowledge(..)
     , Locale(..)

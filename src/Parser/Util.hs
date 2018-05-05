@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Parser.Util
-    (
-      parseCategory
+    ( parseCategory
     , parseLocale
     , parseMetadata
     ) where

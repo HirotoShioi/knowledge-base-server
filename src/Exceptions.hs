@@ -1,4 +1,6 @@
-module Exceptions where
+module Exceptions 
+    ( KBError(..)
+    ) where
 
 import           Control.Exception.Safe
 import qualified Data.Text.Lazy         as LT

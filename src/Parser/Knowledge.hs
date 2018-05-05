@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Parser.Knowledge
-    (
-      parseKnowledge
+    ( parseKnowledge
     ) where
 
 import qualified Data.Text.Lazy as LT
@@ -27,9 +26,9 @@ parseKDesc txt = do
 -- | Parse knowledge's meta data
 parseKnowledgeMeta :: LT.Text -> Either KBError (LT.Text, Category, LT.Text)
 parseKnowledgeMeta txt = case LT.lines txt of
-                             (err:ecat:etxt:_) -> do
+                             (errCode:ecat:etxt:_) -> do
                                   eCategory <- parseCategory ecat
-                                  eCode     <- parseMetadata "errorcode" err
+                                  eCode     <- parseMetadata "errorcode" errCode
                                   eText     <- parseMetadata "errortext" etxt
                                   return (eCode, eCategory, eText)
                              _               -> Left InvalidFormat

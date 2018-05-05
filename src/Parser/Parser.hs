@@ -1,6 +1,5 @@
 module Parser.Parser
-    (
-      MdParser
+    ( MdParser
     , runParser
     , mdParser
     , parseKnowledge

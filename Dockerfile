@@ -50,7 +50,6 @@ RUN rm -rf /opt/cardano-knowledgebase-server/src
 RUN useradd -ms /bin/bash apiuser
 RUN chown -R apiuser:apiuser /opt/cardano-knowledgebase-server
 USER apiuser
-ENV PATH "$PATH:/opt/stack/bin:/opt/cardano-knowledgebase-server/bin"
 
 # Set working directory
 WORKDIR /opt/cardano-knowledgebase-server/bin

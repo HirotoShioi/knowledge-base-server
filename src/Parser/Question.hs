@@ -1,6 +1,5 @@
 module Parser.Question
-     (
-       parseQuestion
+     ( parseQuestion
      ) where
 
 import qualified Data.Text.Lazy as LT

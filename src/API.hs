@@ -2,8 +2,7 @@
 {-# LANGUAGE TypeOperators #-}
 
 module API
-    (
-      Knowledgebase
+    ( Knowledgebase
     , api
     ) where
 
