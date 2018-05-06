@@ -40,7 +40,7 @@ library
     , Exceptions
     , Parser.Knowledge
     , Parser.Util
-    , Parser.Question
+    , Parser.FAQ
     , Parser.Parser
     , Types
   other-modules:

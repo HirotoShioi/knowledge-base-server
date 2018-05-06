@@ -13,7 +13,7 @@ import           Types
 -- | Define an APi
 type Knowledgebase =
        "knowledges" :> Get '[JSON] (Output Knowledge)
-  :<|> "questions"  :> Get '[JSON] (Output Question)
+  :<|> "faq"  :> Get '[JSON] (Output FAQ)
 
 api :: Proxy Knowledgebase
 api = Proxy

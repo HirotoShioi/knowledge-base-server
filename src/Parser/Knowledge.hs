@@ -27,10 +27,10 @@ parseKDesc txt = do
 parseKnowledgeMeta :: LT.Text -> Either KBError (LT.Text, Category, LT.Text)
 parseKnowledgeMeta txt = case LT.lines txt of
                              (errCode:ecat:etxt:_) -> do
-                                  eCategory <- parseCategory ecat
-                                  eCode     <- parseMetadata "errorcode" errCode
-                                  eText     <- parseMetadata "errortext" etxt
-                                  return (eCode, eCategory, eText)
+                                  errorCategory <- parseCategory ecat
+                                  errorCode     <- parseMetadata "errorcode" errCode
+                                  errorText     <- parseMetadata "errortext" etxt
+                                  return (errorCode, errorCategory, errorText)
                              _               -> Left InvalidFormat
 
 -- | Parse knowledge directory

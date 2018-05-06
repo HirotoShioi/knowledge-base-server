@@ -1,9 +1,9 @@
 module Parser.Parser
-    ( MdParser
+    ( DocParser
     , runParser
-    , mdParser
+    , docParser
     , parseKnowledge
-    , parseQuestion
+    , parseFAQ
     ) where
 
 import qualified Data.Text.Lazy   as LT
@@ -11,9 +11,9 @@ import qualified Data.Text.Lazy   as LT
 import           Exceptions
 
 import           Parser.Knowledge (parseKnowledge)
-import           Parser.Question  (parseQuestion)
+import           Parser.FAQ       (parseFAQ)
 
-newtype MdParser a = MdParser {runParser :: [LT.Text] -> LT.Text -> Either KBError a }
+newtype DocParser a = DocParser { runParser :: [LT.Text] -> LT.Text -> Either KBError a }
 
-mdParser :: ([LT.Text] -> LT.Text -> Either KBError a) -> MdParser a
-mdParser = MdParser
+docParser :: ([LT.Text] -> LT.Text -> Either KBError a) -> DocParser a
+docParser = DocParser

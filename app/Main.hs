@@ -16,23 +16,23 @@ import           System.ReadEnvVar        (readEnvDef)
 
 import           API                      (Knowledgebase, api)
 import           Exceptions
-import           Parser.Parser            (MdParser, mdParser, parseKnowledge,
-                                           parseQuestion, runParser)
+import           Parser.Parser            (DocParser, docParser, parseKnowledge,
+                                           parseFAQ, runParser)
 import           Types                    (Knowledge, Output (..),
-                                           Question (..))
+                                           FAQ (..))
 
 data Config = Config
     { cfgKnowledge :: ![Knowledge]
-    , cfgQuestion  :: ![Question]
+    , cfgFAQ  :: ![FAQ]
     }
 
 -- | Path to knowledge directory
 knowledgeDir :: FilePath
-knowledgeDir = "./doc/Issues/"
+knowledgeDir = "./doc/Knowledges/"
 
--- | Path to question directory
-questionDir :: FilePath
-questionDir = "./doc/Questions/"
+-- | Path to FAQ directory
+faqDir :: FilePath
+faqDir = "./doc/FAQ/"
 
 -- | Metadata path
 metaDataPath :: FilePath -> FilePath
@@ -43,7 +43,7 @@ descPath :: FilePath -> [FilePath]
 descPath path = map (\ f -> path <> "/" <> f <> ".md") ["en", "ja"]
 
 -- | Parse each file
-parseFiles :: MdParser a -> FilePath -> IO a
+parseFiles :: DocParser a -> FilePath -> IO a
 parseFiles parser path = do
     descFiles    <- mapM LT.readFile $ descPath path
     categoryFile <- LT.readFile $ metaDataPath path
@@ -53,7 +53,7 @@ parseFiles parser path = do
         Right parsedData -> return parsedData
 
 -- | Parse directory
-parseDirectory :: MdParser a -> FilePath -> IO [a]
+parseDirectory :: DocParser a -> FilePath -> IO [a]
 parseDirectory parser path = do
     pContent <- listDirectory path
         -- Ignore file that starts with '.'
@@ -62,7 +62,7 @@ parseDirectory parser path = do
     mapM (parseFiles parser) contentPaths
 
 -- | Given directory, parse them using the parser and return list of parsed datas.
-generateData :: MdParser a -> FilePath -> IO [a]
+generateData :: DocParser a -> FilePath -> IO [a]
 generateData parser path = do
     putStrLn $ "Parsing markdowns on: " <> path
     parsedData <- parseDirectory parser path
@@ -73,7 +73,7 @@ generateData parser path = do
 server :: Config -> Server Knowledgebase
 server Config{..} = 
          getOutput cfgKnowledge
-    :<|> getOutput cfgQuestion
+    :<|> getOutput cfgFAQ
 
 -- | Create output data that server returns
 getOutput :: [a] -> Handler (Output a)
@@ -84,9 +84,9 @@ getOutput xs = do
 
 main :: IO ()
 main = do
-    knowledge  <- generateData (mdParser parseKnowledge) knowledgeDir
-    questions  <- generateData (mdParser parseQuestion) questionDir
+    knowledge  <- generateData (docParser parseKnowledge) knowledgeDir
+    faqs  <- generateData (docParser parseFAQ) faqDir
     port       <- readEnvDef "PORT" 8080
-    let config = Config knowledge questions
+    let config = Config knowledge faqs
     putStrLn $ "Starting the server at: " <> show port
     run port $ serve api (server config)

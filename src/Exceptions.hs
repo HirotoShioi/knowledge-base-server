@@ -1,4 +1,4 @@
-module Exceptions 
+module Exceptions
     ( KBError(..)
     ) where
 
