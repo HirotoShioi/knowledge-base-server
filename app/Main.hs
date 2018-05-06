@@ -16,14 +16,14 @@ import           System.ReadEnvVar        (readEnvDef)
 
 import           API                      (Knowledgebase, api)
 import           Exceptions
-import           Parser.Parser            (DocParser, docParser, parseKnowledge,
-                                           parseFAQ, runParser)
+import           Parser.Parser            (Parser, Document(..), parseKnowledge,
+                                           parseFAQ)
 import           Types                    (Knowledge, Output (..),
                                            FAQ (..))
 
 data Config = Config
     { cfgKnowledge :: ![Knowledge]
-    , cfgFAQ  :: ![FAQ]
+    , cfgFAQ       :: ![FAQ]
     }
 
 -- | Path to knowledge directory
@@ -43,17 +43,18 @@ descPath :: FilePath -> [FilePath]
 descPath path = map (\ f -> path <> "/" <> f <> ".md") ["en", "ja"]
 
 -- | Parse each file
-parseFiles :: DocParser a -> FilePath -> IO a
+parseFiles :: (Document -> Parser a) -> FilePath -> IO a
 parseFiles parser path = do
     descFiles    <- mapM LT.readFile $ descPath path
     categoryFile <- LT.readFile $ metaDataPath path
-    let eitherParsedData = runParser parser descFiles categoryFile
+    let doc = Document categoryFile descFiles
+        eitherParsedData = parser doc
     case eitherParsedData of
         Left e    -> throw $ ParseError e path -- How do we throw error while running?
         Right parsedData -> return parsedData
 
 -- | Parse directory
-parseDirectory :: DocParser a -> FilePath -> IO [a]
+parseDirectory :: (Document -> Parser a) -> FilePath -> IO [a]
 parseDirectory parser path = do
     pContent <- listDirectory path
         -- Ignore file that starts with '.'
@@ -62,7 +63,7 @@ parseDirectory parser path = do
     mapM (parseFiles parser) contentPaths
 
 -- | Given directory, parse them using the parser and return list of parsed datas.
-generateData :: DocParser a -> FilePath -> IO [a]
+generateData :: (Document -> Parser a) -> FilePath -> IO [a]
 generateData parser path = do
     putStrLn $ "Parsing markdowns on: " <> path
     parsedData <- parseDirectory parser path
@@ -84,8 +85,8 @@ getOutput xs = do
 
 main :: IO ()
 main = do
-    knowledge  <- generateData (docParser parseKnowledge) knowledgeDir
-    faqs  <- generateData (docParser parseFAQ) faqDir
+    knowledge  <- generateData parseKnowledge knowledgeDir
+    faqs  <- generateData parseFAQ faqDir
     port       <- readEnvDef "PORT" 8080
     let config = Config knowledge faqs
     putStrLn $ "Starting the server at: " <> show port
