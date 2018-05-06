@@ -1,13 +1,13 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Types 
+module Types
     ( Category(..)
     , KDescription(..)
     , Knowledge(..)
     , Locale(..)
     , Output(..)
-    , QDescription(..)
-    , Question(..)
+    , FAQDescription(..)
+    , FAQ(..)
     ) where
 
 import           Data.Aeson
@@ -45,23 +45,23 @@ data Knowledge = Knowledge
     , kDescription :: [KDescription] -- ^ Descrption of the issue
     } deriving (Show, Generic)
 
--- | Description for Question
-data QDescription = QDescription
+-- | Description for FAQ
+data FAQDescription = QDescription
     { qLocale  :: !Locale  -- ^ Locale of the description
     , qQuetion :: !LT.Text -- ^ Question text
     , qAnswer  :: !LT.Text -- ^ Answer to the question
     } deriving (Show, Generic)
 
--- | Question and answers about Cardano, Daedalus
-data Question = Question
-    { qCategory    :: !Category       -- ^ Category of the question
-    , qDescription :: ![QDescription] -- ^ Description for the question
+-- | FAQ about Cardano, Daedalus
+data FAQ = FAQ
+    { faqCategory    :: !Category       -- ^ Category of the FAQ
+    , faqDescription :: ![FAQDescription] -- ^ Description for the FAQ
     } deriving (Show, Generic)
 
 -- | Data in which server returns when server API is called.
 data Output a = Output
     { oTimestamp :: !UTCTime -- ^ Timestamp of when the api was called
-    , oData      :: ![a]     -- ^ Either list of knowledge or question
+    , oData      :: ![a]     -- ^ Either list of knowledge or FAQs
     , oNum       :: !Int     -- ^ Number of data
     } deriving (Show, Generic)
 
@@ -70,6 +70,6 @@ instance ToJSON Locale where
 instance ToJSON KDescription where
 instance ToJSON Knowledge where
 instance ToJSON Category where
-instance ToJSON QDescription where
-instance ToJSON Question where
+instance ToJSON FAQDescription where
+instance ToJSON FAQ where
 instance ToJSON a => ToJSON (Output a) where

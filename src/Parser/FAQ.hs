@@ -1,5 +1,5 @@
-module Parser.Question
-     ( parseQuestion
+module Parser.FAQ
+     ( parseFAQ
      ) where
 
 import qualified Data.Text.Lazy as LT
@@ -16,20 +16,20 @@ parseQDesc' txt = case LT.lines txt of
                       _                                -> Left InvalidFormat
 
 -- | Parse description
-parseQDesc :: LT.Text -> Either KBError QDescription
+parseQDesc :: LT.Text -> Either KBError FAQDescription
 parseQDesc txt = do
     (question, locale, solution) <- parseQDesc' txt
     parsedLocale <- parseLocale locale
     return $ QDescription parsedLocale question solution
 
--- | Parse question directory
-parseQuestion :: [LT.Text] -> LT.Text -> Either KBError Question
-parseQuestion ds metadata = do
+-- | Parse FAQ directory
+parseFAQ :: [LT.Text] -> LT.Text -> Either KBError FAQ
+parseFAQ ds metadata = do
     descriptions <- mapM parseQDesc ds
-    category <- parseMetaDatas $ LT.lines metadata
-    return       $ Question category descriptions
+    category <- parseFAQMetaDatas $ LT.lines metadata
+    return       $ FAQ category descriptions
 
 -- | Parse metadata
-parseMetaDatas :: [LT.Text] -> Either KBError Category
-parseMetaDatas (cat:_) = parseCategory cat
-parseMetaDatas _       = Left InvalidFormat
+parseFAQMetaDatas :: [LT.Text] -> Either KBError Category
+parseFAQMetaDatas (cat:_) = parseCategory cat
+parseFAQMetaDatas _       = Left InvalidFormat

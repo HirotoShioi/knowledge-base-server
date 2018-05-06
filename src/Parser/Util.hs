@@ -10,7 +10,7 @@ import           Data.Semigroup ((<>))
 import qualified Data.Text.Lazy as LT
 
 import           Exceptions
-import           Types         (Category(..), Locale(..))
+import           Types          (Category (..), Locale (..))
 
 -- | Parse each category
 parseCategory' :: LT.Text -> Either KBError Category
