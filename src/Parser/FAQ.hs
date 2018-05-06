@@ -7,7 +7,8 @@ module Parser.FAQ
 import qualified Data.Text.Lazy as LT
 
 import           Exceptions
-import           Parser.Util    (Document(..), Parser, parseCategory, parseLocale)
+import           Parser.Util    (Document (..), Parser, parseCategory,
+                                 parseLocale)
 import           Types
 
 -- | Parse description

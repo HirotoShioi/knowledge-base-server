@@ -8,7 +8,8 @@ module Parser.Knowledge
 import qualified Data.Text.Lazy as LT
 
 import           Exceptions
-import           Parser.Util    (Parser, Document(..), parseCategory, parseLocale, parseMetadata)
+import           Parser.Util    (Document (..), Parser, parseCategory,
+                                 parseLocale, parseMetadata)
 import           Types          (Category, KDescription (..), Knowledge (..))
 
 -- | Parse description
