@@ -4,15 +4,14 @@
 
 module Main where
 
-import           Control.Exception.Safe   (throw)
-import           Control.Monad.IO.Class   (liftIO)
-import           Data.Semigroup           ((<>))
-import qualified Data.Text.Lazy.IO        as LT
+import           Universum
+
+import qualified Data.List.NonEmpty       as N
 import           Data.Time                (getCurrentTime)
 import           Network.Wai.Handler.Warp (run)
 import           Servant
 import           System.Directory         (listDirectory)
-import           System.ReadEnvVar        (readEnvDef)
+-- import           System.ReadEnvVar        (readEnvDef)
 
 import           API                      (Knowledgebase, api)
 import           Exceptions
@@ -45,29 +44,29 @@ descPath path = map (\ f -> path <> "/" <> f <> ".md") ["en", "ja"]
 -- | Parse each file
 parseFiles :: (Document -> Parser a) -> FilePath -> IO a
 parseFiles parser path = do
-    descFiles    <- mapM LT.readFile $ descPath path
-    categoryFile <- LT.readFile $ metaDataPath path
-    let doc = Document categoryFile descFiles
+    descFiles    <- mapM readFile $ descPath path
+    categoryFile <- readFile $ metaDataPath path
+    let doc = Document (toLText categoryFile) (toLText <$> descFiles)
         eitherParsedData = parser doc
     case eitherParsedData of
-        Left e    -> throw $ ParseError e path -- How do we throw error while running?
+        Left e    -> throwM $ ParseError e path -- How do we throw error while running?
         Right parsedData -> return parsedData
 
 -- | Parse directory
 parseDirectory :: (Document -> Parser a) -> FilePath -> IO [a]
 parseDirectory parser path = do
     pContent <- listDirectory path
-        -- Ignore file that starts with '.'
-    let filteredContent = filter (\dir -> head dir /= '.') pContent
-        contentPaths = (path ++) <$> filteredContent
+-- Ignore file that starts with '.'
+    let filteredContent = filter (\dir -> head dir /= '.') (N.fromList <$> pContent)
+        contentPaths = (path ++) <$> (N.toList <$> filteredContent)
     mapM (parseFiles parser) contentPaths
 
 -- | Given directory, parse them using the parser and return list of parsed datas.
 generateData :: (Document -> Parser a) -> FilePath -> IO [a]
 generateData parser path = do
-    putStrLn $ "Parsing markdowns on: " <> path
+    putTextLn $ "Parsing markdowns on: " <> show path
     parsedData <- parseDirectory parser path
-    putStrLn "Parsing completed successfully!"
+    putTextLn "Parsing completed successfully!"
     return parsedData
 
 -- | Server
@@ -87,7 +86,8 @@ main :: IO ()
 main = do
     knowledge  <- generateData parseKnowledge knowledgeDir
     faqs  <- generateData parseFAQ faqDir
-    port       <- readEnvDef "PORT" 8080
+    -- port       <- readEnvDef "PORT" 8080
     let config = Config knowledge faqs
-    putStrLn $ "Starting the server at: " <> show port
+        port   = 8080
+    putTextLn $ "Starting the server at: " <> show port
     run port $ serve api (server config)

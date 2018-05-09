@@ -10,10 +10,11 @@ module Types
     , FAQ(..)
     ) where
 
+import           Universum
+
 import           Data.Aeson
-import qualified Data.Text.Lazy as LT
 import           Data.Time
-import           GHC.Generics
+import           GHC.Generics (Generic)
 
 -- | Defining Locale
 data Locale
@@ -33,23 +34,23 @@ data Category
 -- | Description for Knowledge
 data KDescription = KDescription
     { dLocale   :: !Locale  -- ^ Locale of the description
-    , dProblem  :: !LT.Text -- ^ Text describing the problem
-    , dSolution :: !LT.Text -- ^ Text describing solution
+    , dProblem  :: !LText -- ^ Text describing the problem
+    , dSolution :: !LText -- ^ Text describing solution
     } deriving (Show, Generic)
 
 -- | Knowledge needed to perform analysis
 data Knowledge = Knowledge
-    { kErrorCode   :: !LT.Text       -- ^ Errorcode of the issue
+    { kErrorCode   :: !LText       -- ^ Errorcode of the issue
     , kCategory    :: !Category      -- ^ Category of the issue
-    , kErrorText   :: !LT.Text       -- ^ Text in which can be used to analyze log file
+    , kErrorText   :: !LText       -- ^ Text in which can be used to analyze log file
     , kDescription :: [KDescription] -- ^ Descrption of the issue
     } deriving (Show, Generic)
 
 -- | Description for FAQ
 data FAQDescription = QDescription
     { qLocale  :: !Locale  -- ^ Locale of the description
-    , qQuetion :: !LT.Text -- ^ Question text
-    , qAnswer  :: !LT.Text -- ^ Answer to the question
+    , qQuetion :: !LText -- ^ Question text
+    , qAnswer  :: !LText -- ^ Answer to the question
     } deriving (Show, Generic)
 
 -- | FAQ about Cardano, Daedalus

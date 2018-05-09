@@ -2,16 +2,15 @@ module Exceptions
     ( KBError(..)
     ) where
 
-import           Control.Exception.Safe
-import qualified Data.Text.Lazy         as LT
-import           Data.Typeable          (Typeable)
+import           Universum
 
 -- | Exception message describing each exceptions
 data KBError =
-      ParseError KBError FilePath -- ^ Parsing Error
-    | InvalidCategory LT.Text     -- ^ Invalid category
+      EmptyDirectory
+    | ParseError KBError FilePath -- ^ Parsing Error
+    | InvalidCategory LText     -- ^ Invalid category
     | InvalidFormat               -- ^ Invalid format in the markdown
-    | InvalidLocale LT.Text       -- ^ Invalid locale is being written down
-    deriving (Show, Typeable)
+    | InvalidLocale LText       -- ^ Invalid locale is being written down
+    deriving (Show)
 
 instance Exception KBError
