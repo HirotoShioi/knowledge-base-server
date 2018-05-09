@@ -6,9 +6,12 @@ ENV LANG C.UTF-8
 RUN apt-get update
 RUN apt-get upgrade -y --assume-yes
 # Install packages for stack and ghc.
-RUN apt-get install -y --assume-yes xz-utils gcc libgmp-dev zlib1g-dev
+RUN ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib/libstdc++.so
+
+RUN apt-get install -y --assume-yes xz-utils gcc libgmp-dev zlib1g-dev g++
 # Install convenience utilities, like tree, ping, and vim.
 RUN apt-get install -y --assume-yes tree iputils-ping vim-nox
+
 
 # Remove apt caches to reduce the size of our container.
 RUN rm -rf /var/lib/apt/lists/*
