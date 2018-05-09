@@ -5,6 +5,8 @@ module Parser.Knowledge
     ( parseKnowledge
     ) where
 
+import           Universum
+
 import qualified Data.Text.Lazy as LT
 
 import           Exceptions

@@ -4,6 +4,8 @@ module Parser.FAQ
      ( parseFAQ
      ) where
 
+import           Universum
+
 import qualified Data.Text.Lazy as LT
 
 import           Exceptions

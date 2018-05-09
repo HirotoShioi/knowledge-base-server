@@ -6,6 +6,8 @@ module API
     , api
     ) where
 
+import           Universum
+
 import           Servant
 
 import           Types
