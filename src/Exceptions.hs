@@ -3,6 +3,7 @@ module Exceptions
     ) where
 
 import           Universum
+import           Data.Typeable (Typeable)
 
 -- | Exception message describing each exceptions
 data KBError =
@@ -11,6 +12,6 @@ data KBError =
     | InvalidCategory LText     -- ^ Invalid category
     | InvalidFormat               -- ^ Invalid format in the markdown
     | InvalidLocale LText       -- ^ Invalid locale is being written down
-    deriving (Show)
+    deriving (Show, Typeable)
 
 instance Exception KBError
