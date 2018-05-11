@@ -33,37 +33,52 @@ data Category
 
 -- | Description for Knowledge
 data KDescription = KDescription
-    { dLocale   :: !Locale  -- ^ Locale of the description
-    , dProblem  :: !Text -- ^ Text describing the problem
-    , dSolution :: !Text -- ^ Text describing solution
+    { dLocale   :: !Locale
+    -- ^ Locale of the description
+    , dProblem  :: !Text
+    -- ^ Text describing the problem
+    , dSolution :: !Text
+    -- ^ Text describing solution
     } deriving (Show, Generic)
 
 -- | Knowledge needed to perform analysis
 data Knowledge = Knowledge
-    { kErrorCode   :: !Text       -- ^ Errorcode of the issue
-    , kCategory    :: !Category      -- ^ Category of the issue
-    , kErrorText   :: !Text       -- ^ Text in which can be used to analyze log file
-    , kDescription :: [KDescription] -- ^ Descrption of the issue
+    { kErrorCode   :: !Text
+    -- ^ Errorcode of the issue
+    , kCategory    :: !Category
+    -- ^ Category of the issue
+    , kErrorText   :: !Text
+    -- ^ Text in which can be used to analyze log file
+    , kDescription :: [KDescription]
+    -- ^ Descrption of the issue
     } deriving (Show, Generic)
 
 -- | Description for FAQ
 data FAQDescription = QDescription
-    { qLocale  :: !Locale  -- ^ Locale of the description
-    , qQuetion :: !Text -- ^ Question text
-    , qAnswer  :: !Text -- ^ Answer to the question
+    { qLocale  :: !Locale
+    -- ^ Locale of the description
+    , qQuetion :: !Text
+    -- ^ Question text
+    , qAnswer  :: !Text
+    -- ^ Answer to the question
     } deriving (Show, Generic)
 
 -- | FAQ about Cardano, Daedalus
 data FAQ = FAQ
-    { faqCategory    :: !Category       -- ^ Category of the FAQ
-    , faqDescription :: ![FAQDescription] -- ^ Description for the FAQ
+    { faqCategory    :: !Category
+    -- ^ Category of the FAQ
+    , faqDescription :: ![FAQDescription]
+    -- ^ Description for the FAQ
     } deriving (Show, Generic)
 
 -- | Data in which server returns when server API is called.
 data Output a = Output
-    { oTimestamp :: !UTCTime -- ^ Timestamp of when the api was called
-    , oData      :: ![a]     -- ^ Either list of knowledge or FAQs
-    , oNum       :: !Int     -- ^ Number of data
+    { oTimestamp :: !UTCTime
+    -- ^ Timestamp of when the api was called
+    , oData      :: ![a]
+    -- ^ Either list of knowledge or FAQs
+    , oNum       :: !Int
+    -- ^ Number of data
     } deriving (Show, Generic)
 
 -- Todo: Define better instance.. (current json is not formatted nicely)
