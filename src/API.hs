@@ -6,11 +6,9 @@ module API
     , api
     ) where
 
-import           Universum
-
 import           Servant
 
-import           Types
+import           Types   (FAQ, Knowledge, Output)
 
 -- | Define an APi
 type Knowledgebase =

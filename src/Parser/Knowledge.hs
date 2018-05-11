@@ -5,9 +5,9 @@ module Parser.Knowledge
     ( parseKnowledge
     ) where
 
-import           Universum
+import           RIO
 
-import qualified Data.Text.Lazy as LT
+import qualified RIO.Text as T
 
 import           Exceptions
 import           Parser.Util    (Document (..), Parser, parseCategory,
@@ -15,21 +15,21 @@ import           Parser.Util    (Document (..), Parser, parseCategory,
 import           Types          (Category, KDescription (..), Knowledge (..))
 
 -- | Parse description
-parseKDesc' :: LT.Text -> Parser (LT.Text, LT.Text, LT.Text)
-parseKDesc' txt = case LT.lines txt of
+parseKDesc' :: Text -> Parser (Text, Text, Text)
+parseKDesc' txt = case T.lines txt of
                       (_:problem:_:locale:_:solution) ->
-                          return (problem, locale, LT.unlines solution)
+                          return (problem, locale, T.unlines solution)
                       _                               -> Left InvalidFormat
 -- | Parse description
-parseKDesc :: LT.Text -> Parser KDescription
+parseKDesc :: Text -> Parser KDescription
 parseKDesc txt = do
     (problem, locale, solution) <- parseKDesc' txt
     parsedLocale <- parseLocale locale
     return $ KDescription parsedLocale problem solution
 
 -- | Parse knowledge's meta data
-parseKnowledgeMeta :: LT.Text -> Parser (LT.Text, Category, LT.Text)
-parseKnowledgeMeta txt = case LT.lines txt of
+parseKnowledgeMeta :: Text -> Parser (Text, Category, Text)
+parseKnowledgeMeta txt = case T.lines txt of
                              (errCode:ecat:etxt:_) -> do
                                   errorCategory <- parseCategory ecat
                                   errorCode     <- parseMetadata "errorcode" errCode

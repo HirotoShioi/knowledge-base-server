@@ -4,9 +4,9 @@ module Parser.FAQ
      ( parseFAQ
      ) where
 
-import           Universum
+import           RIO
 
-import qualified Data.Text.Lazy as LT
+import qualified RIO.Text as T
 
 import           Exceptions
 import           Parser.Util    (Document (..), Parser, parseCategory,
@@ -14,14 +14,14 @@ import           Parser.Util    (Document (..), Parser, parseCategory,
 import           Types
 
 -- | Parse description
-parseQDesc' :: LT.Text -> Parser (LT.Text, LT.Text, LT.Text)
-parseQDesc' txt = case LT.lines txt of
+parseQDesc' :: Text -> Parser (Text, Text, Text)
+parseQDesc' txt = case T.lines txt of
                       (_:question:_:locale:_:solution) -> return
-                          (question, locale, LT.unlines solution)
+                          (question, locale, T.unlines solution)
                       _                                -> Left InvalidFormat
 
 -- | Parse description
-parseQDesc :: LT.Text -> Parser FAQDescription
+parseQDesc :: Text -> Parser FAQDescription
 parseQDesc txt = do
     (question, locale, solution) <- parseQDesc' txt
     parsedLocale <- parseLocale locale
@@ -31,10 +31,10 @@ parseQDesc txt = do
 parseFAQ :: Document -> Parser FAQ
 parseFAQ Document{..} = do
     descriptions <- mapM parseQDesc docDescription
-    category <- parseFAQMetaDatas $ LT.lines docMetadata
+    category <- parseFAQMetaDatas $ T.lines docMetadata
     return       $ FAQ category descriptions
 
 -- | Parse metadata
-parseFAQMetaDatas :: [LT.Text] -> Parser Category
+parseFAQMetaDatas :: [Text] -> Parser Category
 parseFAQMetaDatas (cat:_) = parseCategory cat
 parseFAQMetaDatas _       = Left InvalidFormat

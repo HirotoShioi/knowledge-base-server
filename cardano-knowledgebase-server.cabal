@@ -19,7 +19,6 @@ library
                     , base >=4.7 && <5
                     , rio
                     , servant-server
-                    , universum
   exposed-modules:    API
                       Exceptions
                       Parser.Knowledge
