@@ -10,9 +10,8 @@ import           RIO
 import qualified RIO.Text as T
 
 import           Exceptions
-import           Parser.Util    (Document (..), Parser, parseCategory,
-                                 parseLocale, parseMetadata)
-import           Types          (Category, KDescription (..), Knowledge (..))
+import           Parser.Util (Document (..), Parser, parseCategory, parseLocale, parseMetadata)
+import           Types (Category, KDescription (..), Knowledge (..))
 
 -- | Parse description
 parseKDesc' :: Text -> Parser (Text, Text, Text)

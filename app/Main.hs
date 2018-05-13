@@ -6,20 +6,19 @@ module Main where
 
 import           RIO
 
-import qualified Data.List.NonEmpty       as N
+import qualified Data.List.NonEmpty as N
 import           Network.Wai.Handler.Warp (run)
-import           RIO.Directory            (listDirectory)
-import           RIO.Text                 (decodeUtf8With, lenientDecode)
-import           RIO.Time                 (getCurrentTime)
-import           Say                      (say)
+import           RIO.Directory (listDirectory)
+import           RIO.Text (decodeUtf8With, lenientDecode)
+import           RIO.Time (getCurrentTime)
+import           Say (say)
 import           Servant
-import           System.ReadEnvVar        (readEnvDef)
+import           System.ReadEnvVar (readEnvDef)
 
-import           API                      (Knowledgebase, api)
+import           API (Knowledgebase, api)
 import           Exceptions
-import           Parser.Parser            (Document (..), Parser, parseFAQ,
-                                           parseKnowledge)
-import           Types                    (FAQ (..), Knowledge, Output (..))
+import           Parser.Parser (Document (..), Parser, parseFAQ, parseKnowledge)
+import           Types (FAQ (..), Knowledge, Output (..))
 
 data Config = Config
     { cfgKnowledge :: ![Knowledge]

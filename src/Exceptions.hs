@@ -8,15 +8,15 @@ import           Data.Typeable (Typeable)
 
 -- | Exception message describing each exceptions
 data KBError =
-      EmptyDirectory              
+      EmptyDirectory
     -- ^ Empty Directory
     | ParseError KBError FilePath
     -- ^ Parsing Error
     | InvalidCategory Text
     -- ^ Invalid category
-    | InvalidFormat               
+    | InvalidFormat
     -- ^ Invalid format in the markdown
-    | InvalidLocale Text          
+    | InvalidLocale Text
     -- ^ Invalid locale is being written down
     deriving (Show, Typeable)
 
