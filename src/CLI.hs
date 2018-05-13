@@ -9,9 +9,10 @@ import           Options.Applicative
 import           Paths_cardano_knowledgebase_server (version)
 
 data CLI
-    = RunServer
-    | NewKnowledge String
+    = NewKnowledge String
     | NewFAQ String
+    | RunServer
+    | VerifyDocs
     deriving Show
 
 cmdNewKnowledge :: Parser CLI
@@ -34,6 +35,8 @@ cli = hsubparser $ mconcat
             (progDesc "Create new knowledge"))
         , command "new-faq" (info cmdNewFAQ
             (progDesc "Create new FAQ"))
+        , command "verify" (info (pure VerifyDocs)
+            (progDesc "Check if all the documents are valid"))
         ]
 
 getCliArgs :: IO CLI

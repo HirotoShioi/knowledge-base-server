@@ -8,7 +8,8 @@ import           RIO
 
 import qualified Data.List.NonEmpty as N
 import           Network.Wai.Handler.Warp (run)
-import           RIO.Directory (copyFile, createDirectoryIfMissing, listDirectory, doesDirectoryExist)
+import           RIO.Directory (copyFile, createDirectoryIfMissing, doesDirectoryExist,
+                                listDirectory)
 import           RIO.Text (decodeUtf8With, lenientDecode)
 import           RIO.Time (getCurrentTime)
 import           Say (say, sayString)
@@ -16,7 +17,7 @@ import           Servant
 import           System.ReadEnvVar (readEnvDef)
 
 import           API (Knowledgebase, api)
-import           CLI (CLI(..), getCliArgs)
+import           CLI (CLI (..), getCliArgs)
 import           Exceptions
 import           Parser.Parser (Document (..), Parser, parseFAQ, parseKnowledge)
 import           Types (FAQ (..), Knowledge, Output (..))
@@ -94,7 +95,7 @@ createNew templatePath dirPath filename = do
       else do
         ds <- listDirectory templatePath
         createDirectoryIfMissing True filePath
-        mapM_ (\name -> copyFile 
+        mapM_ (\name -> copyFile
                           (templatePath <> "/" <> name)
                           (dirPath <> filename <> "/" <> name)) ds
         sayString $ "Created new file at: " <> filePath
@@ -105,6 +106,10 @@ main = do
     case cliArgs of
         (NewFAQ filename) -> createNew "./doc/Templates/FAQ" faqDir filename
         (NewKnowledge filename) -> createNew "./doc/Templates/Knowledge" knowledgeDir filename
+        VerifyDocs -> do
+            void $ generateData parseKnowledge knowledgeDir
+            void $ generateData parseFAQ faqDir
+            say "All the documents are valid!"
         RunServer -> do
             knowledge  <- generateData parseKnowledge knowledgeDir
             faqs  <- generateData parseFAQ faqDir
