@@ -9,8 +9,7 @@ import           RIO
 import qualified RIO.Text as T
 
 import           Exceptions
-import           Parser.Util    (Document (..), Parser, parseCategory,
-                                 parseLocale)
+import           Parser.Util (Document (..), Parser, parseCategory, parseLocale)
 import           Types
 
 -- | Parse description

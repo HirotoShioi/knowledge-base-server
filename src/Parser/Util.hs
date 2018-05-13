@@ -13,7 +13,7 @@ import           RIO
 import qualified RIO.Text as T
 
 import           Exceptions
-import           Types          (Category (..), Locale (..))
+import           Types (Category (..), Locale (..))
 
 -- | Parse each category
 parseCategory' :: Text -> Parser Category

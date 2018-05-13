@@ -12,9 +12,9 @@ module Types
 
 import           RIO
 
-import           Data.Aeson   (ToJSON)
+import           Data.Aeson (ToJSON)
 import           GHC.Generics (Generic)
-import           RIO.Time     (UTCTime)
+import           RIO.Time (UTCTime)
 
 -- | Defining Locale
 data Locale

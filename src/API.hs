@@ -8,7 +8,7 @@ module API
 
 import           Servant
 
-import           Types   (FAQ, Knowledge, Output)
+import           Types (FAQ, Knowledge, Output)
 
 -- | Define an APi
 type Knowledgebase =
