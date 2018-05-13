@@ -44,9 +44,9 @@ getCliArgs = execParser opts
         where
         opts = info (cli <**> helper <**> versionHelper)
             ( fullDesc
-            <> header "Log classifier"
-            <> progDesc "Client for peforming analysis on Zendesk"
+            <> header "Cardano knowledge base server"
+            <> progDesc "Haskell servant server for Cardano related informations"
             )
         versionHelper = infoOption
-            ("Log classifier version" <> show version)
+            ("Knowledgebase version" <> show version)
             (long "version" <> help "Show version")
