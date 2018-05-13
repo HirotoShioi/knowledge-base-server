@@ -52,8 +52,12 @@ parseFiles parser path = do
                        (decodeUtf8With lenientDecode <$> descFiles)
         eitherParsedData = parser doc
     case eitherParsedData of
-        Left e           -> throwM $ ParseError e path -- How do we throw error while running?
-        Right parsedData -> return parsedData
+        Left e           -> do
+            say $ "Parsing failed on: " <> tshow path
+            throwM $ ParseError e path -- How do we throw error while running?
+        Right parsedData -> do
+            say $ "Parsed " <> tshow path <> " successfuly"
+            return parsedData
 
 -- | Parse directory
 parseDirectory :: (Document -> Parser a) -> FilePath -> IO [a]
@@ -67,10 +71,8 @@ parseDirectory parser path = do
 -- | Given directory, parse them using the parser and return list of parsed datas.
 generateData :: (Document -> Parser a) -> FilePath -> IO [a]
 generateData parser path = do
-    say $ "Parsing markdowns on: " <> tshow path
-    parsedData <- parseDirectory parser path
-    say "Parsing completed successfully!"
-    return parsedData
+    say $ "\nParsing markdowns on: " <> tshow path
+    parseDirectory parser path
 
 -- | Server
 server :: Config -> Server Knowledgebase
@@ -107,9 +109,10 @@ main = do
         (NewFAQ filename) -> createNew "./doc/Templates/FAQ" faqDir filename
         (NewKnowledge filename) -> createNew "./doc/Templates/Knowledge" knowledgeDir filename
         VerifyDocs -> do
+            say "Verifying all the documents in the doc directory..."
             void $ generateData parseKnowledge knowledgeDir
             void $ generateData parseFAQ faqDir
-            say "All the documents are valid!"
+            say "All documents are valid!"
         RunServer -> do
             knowledge  <- generateData parseKnowledge knowledgeDir
             faqs  <- generateData parseFAQ faqDir
