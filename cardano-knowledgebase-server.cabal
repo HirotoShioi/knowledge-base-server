@@ -17,9 +17,11 @@ library
   hs-source-dirs:     src
   build-depends:      aeson
                     , base >=4.7 && <5
+                    , optparse-applicative
                     , rio
                     , servant-server
   exposed-modules:    API
+                      CLI
                       Exceptions
                       Parser.Knowledge
                       Parser.Util

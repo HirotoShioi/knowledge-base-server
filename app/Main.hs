@@ -8,14 +8,15 @@ import           RIO
 
 import qualified Data.List.NonEmpty as N
 import           Network.Wai.Handler.Warp (run)
-import           RIO.Directory (listDirectory)
+import           RIO.Directory (copyFile, createDirectoryIfMissing, listDirectory, doesDirectoryExist)
 import           RIO.Text (decodeUtf8With, lenientDecode)
 import           RIO.Time (getCurrentTime)
-import           Say (say)
+import           Say (say, sayString)
 import           Servant
 import           System.ReadEnvVar (readEnvDef)
 
 import           API (Knowledgebase, api)
+import           CLI (CLI(..), getCliArgs)
 import           Exceptions
 import           Parser.Parser (Document (..), Parser, parseFAQ, parseKnowledge)
 import           Types (FAQ (..), Knowledge, Output (..))
@@ -83,11 +84,31 @@ getOutput xs = do
     let oNum = length xs
     return $ Output currTime xs oNum
 
+-- | Create new knowledge/faq with filename
+createNew :: FilePath -> FilePath -> String -> IO ()
+createNew templatePath dirPath filename = do
+    let filePath = dirPath  <> filename
+    doeExist <- doesDirectoryExist filePath
+    if doeExist
+      then throwString "Existing directory"
+      else do
+        ds <- listDirectory templatePath
+        createDirectoryIfMissing True filePath
+        mapM_ (\name -> copyFile 
+                          (templatePath <> "/" <> name)
+                          (dirPath <> filename <> "/" <> name)) ds
+        sayString $ "Created new file at: " <> filePath
+
 main :: IO ()
 main = do
-    knowledge  <- generateData parseKnowledge knowledgeDir
-    faqs  <- generateData parseFAQ faqDir
-    port       <- readEnvDef "PORT" 8080
-    let config = Config knowledge faqs
-    say $ "Starting the server at: " <> tshow port
-    run port $ serve api (server config)
+    cliArgs <- getCliArgs
+    case cliArgs of
+        (NewFAQ filename) -> createNew "./doc/Templates/FAQ" faqDir filename
+        (NewKnowledge filename) -> createNew "./doc/Templates/Knowledge" knowledgeDir filename
+        RunServer -> do
+            knowledge  <- generateData parseKnowledge knowledgeDir
+            faqs  <- generateData parseFAQ faqDir
+            port       <- readEnvDef "PORT" 8080
+            let config = Config knowledge faqs
+            say $ "Starting the server at: " <> tshow port
+            run port $ serve api (server config)

@@ -57,4 +57,4 @@ USER apiuser
 # Set working directory
 WORKDIR /opt/cardano-knowledgebase-server/bin
 
-CMD /opt/cardano-knowledgebase-server/bin/cardano-knowledgebase-server-api
+CMD /opt/cardano-knowledgebase-server/bin/cardano-knowledgebase-server-api -- run-server
