@@ -9,20 +9,14 @@ git:
 cache:
   directories:
   - "$HOME/.stack"
-  - "$HOME/build/hiroto/cardano-knowledgebase-server/.stack-work"
+  - "$HOME/build/HirotoShioi/knowledge-base-server/.stack-work"
 
 
 matrix:
   include:
 
-  - ghc: 8.0.1
-    env: GHCVER='8.0.1' STACK_YAML="$HOME/build/hiroto/cardano-knowledgebase-server/stack-$GHCVER.yaml"
-
-  - ghc: 8.0.2
-    env: GHCVER='8.0.2' STACK_YAML="$HOME/build/hiroto/cardano-knowledgebase-server/stack-$GHCVER.yaml"
-
   - ghc: 8.2.2
-    env: GHCVER='8.2.2' STACK_YAML="$HOME/build/hiroto/cardano-knowledgebase-server/stack.yaml"
+    env: GHCVER='8.2.2' STACK_YAML="$HOME/build/HirotoShioi/knowledge-base-server/stack.yaml"
 
 
 addons:
@@ -48,7 +42,7 @@ install:
   - stack ghc -- --version
 
   - travis_wait 40 stack build --only-dependencies --no-terminal
-  - travis_wait 40 stack build --test --bench --no-run-tests --no-run-benchmarks --no-terminal
+  - travis_wait 40 stack build --bench --no-run-tests --no-run-benchmarks --no-terminal
 
 
 script:

@@ -1,2 +1,7 @@
+module Main where
+
+import RIO
+import Say
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = say "Test suite not yet implemented"
