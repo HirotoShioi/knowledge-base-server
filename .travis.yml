@@ -42,9 +42,9 @@ install:
   - stack ghc -- --version
 
   - travis_wait 40 stack build --only-dependencies --no-terminal
-  - travis_wait 40 stack build --bench --no-run-tests --no-run-benchmarks --no-terminal
+  - travis_wait 40 stack build --test --bench --no-run-tests --no-run-benchmarks --no-terminal
 
 
 script:
 
-  - travis_wait 40 stack build --no-terminal
+  - travis_wait 40 stack build --test --no-terminal
