@@ -8,7 +8,7 @@ This is Haskell application which parses the markdown file then make it availabl
 Cardano knowledge base server
 
 Usage: <interactive> COMMAND [--version]
-  Haskell servant server for Cardano related informations
+  Haskell servant server for Cardano related information
 
 Available options:
   -h,--help                Show this help text
@@ -18,7 +18,7 @@ Available commands:
   run-server               Run server
   new-knowledge            Create new knowledge
   new-faq                  Create new FAQ
-  verify                   Check if all the documents are valid
+  verify-docs              Check if all the documents are valid
 ```
 
 ## How it works

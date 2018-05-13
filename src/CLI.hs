@@ -35,7 +35,7 @@ cli = hsubparser $ mconcat
             (progDesc "Create new knowledge"))
         , command "new-faq" (info cmdNewFAQ
             (progDesc "Create new FAQ"))
-        , command "verify" (info (pure VerifyDocs)
+        , command "verify-docs" (info (pure VerifyDocs)
             (progDesc "Check if all the documents are valid"))
         ]
 
@@ -45,7 +45,7 @@ getCliArgs = execParser opts
         opts = info (cli <**> helper <**> versionHelper)
             ( fullDesc
             <> header "Cardano knowledge base server"
-            <> progDesc "Haskell servant server for Cardano related informations"
+            <> progDesc "Haskell servant server for Cardano related information"
             )
         versionHelper = infoOption
             ("Knowledgebase version" <> show version)
