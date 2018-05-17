@@ -28,25 +28,25 @@ cmdNewFAQ = NewFAQ <$> argument str
 -- | Parser for CLI commands
 cli :: Parser CLI
 cli = hsubparser $ mconcat
-        [
-          command "run-server" (info (pure RunServer)
-            (progDesc "Run server"))
-        , command "new-knowledge" (info cmdNewKnowledge
-            (progDesc "Create new knowledge"))
-        , command "new-faq" (info cmdNewFAQ
-            (progDesc "Create new FAQ"))
-        , command "verify-docs" (info (pure VerifyDocs)
-            (progDesc "Check if all the documents are valid"))
-        ]
+    [
+      command "run-server" (info (pure RunServer)
+        (progDesc "Run server"))
+    , command "new-knowledge" (info cmdNewKnowledge
+        (progDesc "Create new knowledge"))
+    , command "new-faq" (info cmdNewFAQ
+        (progDesc "Create new FAQ"))
+    , command "verify-docs" (info (pure VerifyDocs)
+        (progDesc "Check if all the documents are valid"))
+    ]
 
 getCliArgs :: IO CLI
 getCliArgs = execParser opts
-        where
-        opts = info (cli <**> helper <**> versionHelper)
-            ( fullDesc
-            <> header "Cardano knowledge base server"
-            <> progDesc "Haskell servant server for Cardano related information"
-            )
-        versionHelper = infoOption
-            ("Knowledgebase version" <> show version)
-            (long "version" <> help "Show version")
+  where
+    opts = info (cli <**> helper <**> versionHelper)
+        ( fullDesc
+        <> header "Cardano knowledge base server"
+        <> progDesc "Haskell servant server for Cardano related information"
+        )
+    versionHelper = infoOption
+        ("Knowledgebase version" <> show version)
+        (long "version" <> help "Show version")

@@ -31,7 +31,7 @@ parseFAQ :: Document -> Parser FAQ
 parseFAQ Document{..} = do
     descriptions <- mapM parseQDesc docDescription
     category <- parseFAQMetaDatas $ T.lines docMetadata
-    return       $ FAQ category descriptions
+    return $ FAQ category descriptions
 
 -- | Parse metadata
 parseFAQMetaDatas :: [Text] -> Parser Category

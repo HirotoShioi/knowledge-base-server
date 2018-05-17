@@ -43,7 +43,8 @@ library
 executable cardano-knowledgebase-server-api
   main-is:            Main.hs
   hs-source-dirs:     app
-  ghc-options:        -Wall
+  ghc-options:        -O2
+                      -Wall
                       -Wcompat
                       -Wincomplete-record-updates
                       -Wincomplete-uni-patterns
@@ -68,7 +69,9 @@ test-suite cardano-knowledgebase-server-test
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
   hs-source-dirs:     test
-  ghc-options:        -threaded -rtsopts -with-rtsopts=-N
+  ghc-options:        -O2
+                      -Wall
+                      -threaded -rtsopts -with-rtsopts=-N
   build-depends:      base >=4.7 && <5
                     , cardano-knowledgebase-server
                     , say
