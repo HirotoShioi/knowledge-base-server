@@ -11,8 +11,8 @@ import           Control.Lens.TH (makeLenses)
 import           Data.Extensible
 import qualified Data.List.NonEmpty as N
 import           Network.Wai.Handler.Warp (run)
-import           RIO.Directory (copyFile, createDirectoryIfMissing, doesDirectoryExist,
-                                listDirectory)
+import           RIO.Directory (copyFile, createDirectoryIfMissing, doesDirectoryExist
+                               , listDirectory)
 import           RIO.Text (decodeUtf8With, lenientDecode)
 import           RIO.Time (getCurrentTime)
 import           Say (say, sayString)
@@ -98,8 +98,8 @@ getOutput :: [a] -> Servant.Handler (Output a)
 getOutput xs = do
     currTime <- liftIO getCurrentTime
     let count = length xs
-    return $ #timestamp @= currTime
-          <: #data      @= xs
+    return $ #timestamp       @= currTime
+          <: #data            @= xs
           <: #numberOfOutputs @= count
           <: nil
 
