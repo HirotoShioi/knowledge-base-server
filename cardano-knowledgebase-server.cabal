@@ -55,6 +55,7 @@ executable cardano-knowledgebase-server-api
                     , aeson
                     , base >=4.7 && <5
                     , extensible
+                    , lens
                     , read-env-var
                     , rio
                     , say

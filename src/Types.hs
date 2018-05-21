@@ -41,9 +41,9 @@ type KnowledgeDescription = Record
      ]
 
 type Knowledge = Record
-    '[ "errorCode"   >: Text
-     , "category"    >: Category
-     , "errorText"   >: Text
+    '[ "errorCode"    >: Text
+     , "category"     >: Category
+     , "errorText"    >: Text
      , "descriptions" >: [KnowledgeDescription]
      ]
 
@@ -54,7 +54,7 @@ type FAQDescription = Record
      ]
 
 type FAQ = Record
-    '[ "category"    >: Category
+    '[ "category"     >: Category
      , "descriptions" >: [FAQDescription]
      ]
 

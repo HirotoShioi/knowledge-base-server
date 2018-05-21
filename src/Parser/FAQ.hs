@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE RecordWildCards  #-}
 
 module Parser.FAQ
      ( parseFAQ
