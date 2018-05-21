@@ -21,7 +21,7 @@ import           System.ReadEnvVar (readEnvDef)
 import           API (Knowledgebase, api)
 import           CLI (CLI (..), getCliArgs)
 import           Exceptions
-import           Parser.Parser (Document (..), Parser, parseFAQ, parseKnowledge)
+import           Parser.Parser (Document, Parser, parseFAQ, parseKnowledge)
 import           Types (FAQ, Knowledge, Output)
 
 data Config = Config
@@ -49,9 +49,11 @@ descPath path = map (\ f -> path <> "/" <> f <> ".md") ["en", "ja"]
 parseFiles :: (Document -> Parser a) -> FilePath -> IO a
 parseFiles parser path = do
     descFiles    <- mapM readFileBinary $ descPath path
-    categoryFile <- readFileBinary $ metaDataPath path
-    let doc = Document (decodeUtf8With lenientDecode categoryFile)
-                       (decodeUtf8With lenientDecode <$> descFiles)
+    metadataFile <- readFileBinary $ metaDataPath path
+    let doc :: Document
+        doc = #metadata @= (decodeUtf8With lenientDecode metadataFile)
+           <: #descriptions @= (decodeUtf8With lenientDecode <$> descFiles)
+           <: nil
         eitherParsedData = parser doc
     case eitherParsedData of
         Left e           -> do
