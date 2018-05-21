@@ -1,11 +1,14 @@
+{-# LANGUAGE OverloadedLabels  #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 {-# LANGUAGE TypeOperators     #-}
 
 module Main where
 
 import           RIO
 
+import           Control.Lens.TH (makeLenses)
+import           Data.Extensible
 import qualified Data.List.NonEmpty as N
 import           Network.Wai.Handler.Warp (run)
 import           RIO.Directory (copyFile, createDirectoryIfMissing, doesDirectoryExist,
@@ -19,13 +22,15 @@ import           System.ReadEnvVar (readEnvDef)
 import           API (Knowledgebase, api)
 import           CLI (CLI (..), getCliArgs)
 import           Exceptions
-import           Parser.Parser (Document (..), Parser, parseFAQ, parseKnowledge)
-import           Types (FAQ (..), Knowledge, Output (..))
+import           Parser.Parser (Document, Parser, parseFAQ, parseKnowledge)
+import           Types (FAQ, Knowledge, Output)
 
 data Config = Config
-    { cfgKnowledge :: ![Knowledge]
-    , cfgFAQ       :: ![FAQ]
+    { _cfgKnowledge :: ![Knowledge]
+    , _cfgFAQ       :: ![FAQ]
     }
+
+makeLenses ''Config
 
 -- | Path to knowledge directory
 knowledgeDir :: FilePath
@@ -44,12 +49,16 @@ descPath :: FilePath -> [FilePath]
 descPath path = map (\ f -> path <> "/" <> f <> ".md") ["en", "ja"]
 
 -- | Parse each file
-parseFiles :: (Document -> Parser a) -> FilePath -> IO a
+parseFiles :: (MonadIO m, MonadThrow m)
+           => (Document -> Parser a)
+           -> FilePath -> m a
 parseFiles parser path = do
     descFiles    <- mapM readFileBinary $ descPath path
-    categoryFile <- readFileBinary $ metaDataPath path
-    let doc = Document (decodeUtf8With lenientDecode categoryFile)
-                       (decodeUtf8With lenientDecode <$> descFiles)
+    metadataFile <- readFileBinary $ metaDataPath path
+    let doc :: Document
+        doc = #metadata     @= decodeUtf8With lenientDecode metadataFile
+           <: #descriptions @= decodeUtf8With lenientDecode <$> descFiles
+           <: nil
         eitherParsedData = parser doc
     case eitherParsedData of
         Left e           -> do
@@ -60,7 +69,9 @@ parseFiles parser path = do
             return parsedData
 
 -- | Parse directory
-parseDirectory :: (Document -> Parser a) -> FilePath -> IO [a]
+parseDirectory :: (MonadIO m, MonadThrow m) 
+               => (Document -> Parser a)
+               -> FilePath -> m [a]
 parseDirectory parser path = do
     pContent <- listDirectory path
 -- Ignore file that starts with '.'
@@ -69,26 +80,31 @@ parseDirectory parser path = do
     mapM (parseFiles parser) contentPaths
 
 -- | Given directory, parse them using the parser and return list of parsed datas.
-generateData :: (Document -> Parser a) -> FilePath -> IO [a]
+generateData :: (MonadIO m, MonadThrow m)
+             => (Document -> Parser a)
+             -> FilePath -> m [a]
 generateData parser path = do
     say $ "\nParsing markdowns on: " <> tshow path
     parseDirectory parser path
 
 -- | Server
 server :: Config -> Server Knowledgebase
-server Config{..} =
-         getOutput cfgKnowledge
-    :<|> getOutput cfgFAQ
+server cfg =
+         getOutput (cfg ^. cfgKnowledge)
+    :<|> getOutput (cfg ^. cfgFAQ)
 
 -- | Create output data that server returns
 getOutput :: [a] -> Servant.Handler (Output a)
 getOutput xs = do
     currTime <- liftIO getCurrentTime
-    let oNum = length xs
-    return $ Output currTime xs oNum
+    let count = length xs
+    return $ #timestamp @= currTime
+          <: #data      @= xs
+          <: #numberOfOutputs @= count
+          <: nil
 
 -- | Create new knowledge/faq with filename
-createNew :: FilePath -> FilePath -> String -> IO ()
+createNew :: (MonadIO m) => FilePath -> FilePath -> String -> m ()
 createNew templatePath dirPath filename = do
     let filePath = dirPath  <> filename
     doeExist <- doesDirectoryExist filePath

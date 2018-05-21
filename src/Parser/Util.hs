@@ -1,8 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE TypeOperators     #-}
 
 module Parser.Util
     ( Parser
-    , Document(..)
+    , Document
     , parseCategory
     , parseLocale
     , parseMetadata
@@ -10,6 +12,7 @@ module Parser.Util
 
 import           RIO
 
+import           Data.Extensible
 import qualified RIO.Text as T
 
 import           Exceptions
@@ -26,8 +29,8 @@ parseCategory' err        = Left $ InvalidCategory err
 
 parseCategory :: Text -> Parser Category
 parseCategory str = case T.stripPrefix "category:" str of
-                         Just cat -> parseCategory' $ T.toLower $ T.strip cat
-                         Nothing  -> Left InvalidFormat
+    Just cat -> parseCategory' $ T.toLower $ T.strip cat
+    Nothing  -> Left InvalidFormat
 
 -- | Parse locale
 parseLocale :: Text -> Parser Locale
@@ -38,12 +41,12 @@ parseLocale err  = Left $ InvalidLocale err
 -- | Parse metadata's field
 parseMetadata :: Text -> Text -> Parser Text
 parseMetadata err txt = case T.stripPrefix (err <> ":") (T.toLower txt) of
-                            Just str -> return $ T.strip str
-                            Nothing  -> Left InvalidFormat
+    Just str -> return $ T.strip str
+    Nothing  -> Left InvalidFormat
 
 type Parser a = Either KBError a
 
-data Document = Document
-    { docMetadata    :: !Text
-    , docDescription :: ![Text]
-    }
+type Document = Record
+    '[ "metadata"    >: Text
+     , "descriptions" >: [Text]
+     ]

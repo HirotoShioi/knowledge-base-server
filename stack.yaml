@@ -66,3 +66,4 @@ packages:
 # compiler-check: newer-minor
 extra-deps:
 - rio-0.1.2.0
+- extensible-0.4.9

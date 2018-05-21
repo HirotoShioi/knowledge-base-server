@@ -17,6 +17,7 @@ library
   hs-source-dirs:     src
   build-depends:      aeson
                     , base >=4.7 && <5
+                    , extensible
                     , optparse-applicative
                     , rio
                     , servant-server
@@ -53,6 +54,8 @@ executable cardano-knowledgebase-server-api
   build-depends:      cardano-knowledgebase-server
                     , aeson
                     , base >=4.7 && <5
+                    , extensible
+                    , lens
                     , read-env-var
                     , rio
                     , say

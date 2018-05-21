@@ -1,18 +1,21 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Types
     ( Category(..)
-    , KDescription(..)
-    , Knowledge(..)
+    , KnowledgeDescription
+    , Knowledge
     , Locale(..)
-    , Output(..)
-    , FAQDescription(..)
-    , FAQ(..)
+    , Output
+    , FAQDescription
+    , FAQ
     ) where
 
 import           RIO
 
 import           Data.Aeson (ToJSON)
+import           Data.Extensible
 import           GHC.Generics (Generic)
 import           RIO.Time (UTCTime)
 
@@ -31,61 +34,36 @@ data Category
     | Network  -- ^ Network
     deriving (Show, Generic)
 
--- | Description for Knowledge
-data KDescription = KDescription
-    { dLocale   :: !Locale
-    -- ^ Locale of the description
-    , dProblem  :: !Text
-    -- ^ Text describing the problem
-    , dSolution :: !Text
-    -- ^ Text describing solution
-    } deriving (Show, Generic)
+type KnowledgeDescription = Record
+    '[ "locale"   >: Locale  -- ^ Locale of the description
+     , "problem"  >: Text    -- ^ Text describing the problem
+     , "solution" >: Text    -- ^ Text describing solution
+     ]
 
--- | Knowledge needed to perform analysis
-data Knowledge = Knowledge
-    { kErrorCode   :: !Text
-    -- ^ Errorcode of the issue
-    , kCategory    :: !Category
-    -- ^ Category of the issue
-    , kErrorText   :: !Text
-    -- ^ Text in which can be used to analyze log file
-    , kDescription :: [KDescription]
-    -- ^ Descrption of the issue
-    } deriving (Show, Generic)
+type Knowledge = Record
+    '[ "errorCode"    >: Text
+     , "category"     >: Category
+     , "errorText"    >: Text
+     , "descriptions" >: [KnowledgeDescription]
+     ]
 
--- | Description for FAQ
-data FAQDescription = QDescription
-    { qLocale  :: !Locale
-    -- ^ Locale of the description
-    , qQuetion :: !Text
-    -- ^ Question text
-    , qAnswer  :: !Text
-    -- ^ Answer to the question
-    } deriving (Show, Generic)
+type FAQDescription = Record
+    '[ "locale"   >: Locale
+     , "question" >: Text
+     , "solution" >: Text
+     ]
 
--- | FAQ about Cardano, Daedalus
-data FAQ = FAQ
-    { faqCategory    :: !Category
-    -- ^ Category of the FAQ
-    , faqDescription :: ![FAQDescription]
-    -- ^ Description for the FAQ
-    } deriving (Show, Generic)
+type FAQ = Record
+    '[ "category"     >: Category
+     , "descriptions" >: [FAQDescription]
+     ]
 
 -- | Data in which server returns when server API is called.
-data Output a = Output
-    { oTimestamp :: !UTCTime
-    -- ^ Timestamp of when the api was called
-    , oData      :: ![a]
-    -- ^ Either list of knowledge or FAQs
-    , oNum       :: !Int
-    -- ^ Number of data
-    } deriving (Show, Generic)
+type Output a = Record
+    '[ "timestamp"       >: UTCTime
+     , "data"            >: [a]
+     , "numberOfOutputs" >: Int
+     ]
 
--- Todo: Define better instance.. (current json is not formatted nicely)
-instance ToJSON Locale where
-instance ToJSON KDescription where
-instance ToJSON Knowledge where
-instance ToJSON Category where
-instance ToJSON FAQDescription where
-instance ToJSON FAQ where
-instance ToJSON a => ToJSON (Output a) where
+instance ToJSON Locale
+instance ToJSON Category

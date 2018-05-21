@@ -1,10 +1,10 @@
 module Parser.Parser
     ( Parser
-    , Document(..)
+    , Document
     , parseKnowledge
     , parseFAQ
     ) where
 
 import           Parser.FAQ (parseFAQ)
 import           Parser.Knowledge (parseKnowledge)
-import           Parser.Util (Document (..), Parser)
+import           Parser.Util (Document, Parser)
