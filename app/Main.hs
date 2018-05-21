@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedLabels  #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeOperators     #-}
@@ -6,6 +7,7 @@ module Main where
 
 import           RIO
 
+import           Data.Extensible
 import qualified Data.List.NonEmpty as N
 import           Network.Wai.Handler.Warp (run)
 import           RIO.Directory (copyFile, createDirectoryIfMissing, doesDirectoryExist,
@@ -20,7 +22,7 @@ import           API (Knowledgebase, api)
 import           CLI (CLI (..), getCliArgs)
 import           Exceptions
 import           Parser.Parser (Document (..), Parser, parseFAQ, parseKnowledge)
-import           Types (FAQ (..), Knowledge, Output (..))
+import           Types (FAQ, Knowledge, Output)
 
 data Config = Config
     { cfgKnowledge :: ![Knowledge]
@@ -84,8 +86,11 @@ server Config{..} =
 getOutput :: [a] -> Servant.Handler (Output a)
 getOutput xs = do
     currTime <- liftIO getCurrentTime
-    let oNum = length xs
-    return $ Output currTime xs oNum
+    let count = length xs
+    return $ #timestamp @= currTime
+          <: #data      @= xs
+          <: #numberOfOutputs @= count
+          <: nil
 
 -- | Create new knowledge/faq with filename
 createNew :: FilePath -> FilePath -> String -> IO ()

@@ -1,4 +1,5 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE RecordWildCards  #-}
 
 module Parser.FAQ
      ( parseFAQ
@@ -6,6 +7,7 @@ module Parser.FAQ
 
 import           RIO
 
+import           Data.Extensible
 import qualified RIO.Text as T
 
 import           Exceptions
@@ -24,14 +26,19 @@ parseQDesc :: Text -> Parser FAQDescription
 parseQDesc txt = do
     (question, locale, solution) <- parseQDesc' txt
     parsedLocale <- parseLocale locale
-    return $ QDescription parsedLocale question solution
+    return $ #locale   @= parsedLocale
+          <: #question @= question
+          <: #solution @= solution
+          <: nil
 
 -- | Parse FAQ directory
 parseFAQ :: Document -> Parser FAQ
 parseFAQ Document{..} = do
     descriptions <- mapM parseQDesc docDescription
     category <- parseFAQMetaDatas $ T.lines docMetadata
-    return $ FAQ category descriptions
+    return $ #category     @= category
+          <: #descriptions @= descriptions
+          <: nil
 
 -- | Parse metadata
 parseFAQMetaDatas :: [Text] -> Parser Category
