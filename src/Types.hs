@@ -4,12 +4,12 @@
 
 module Types
     ( Category(..)
+    , FAQ
+    , FAQDescription
     , KnowledgeDescription
     , Knowledge
     , Locale(..)
     , Output
-    , FAQDescription
-    , FAQ
     ) where
 
 import           RIO
@@ -21,17 +21,17 @@ import           RIO.Time (UTCTime)
 
 -- | Defining Locale
 data Locale
-    = En -- ^ English
-    | Ja -- ^ Japanese
+    = En  -- ^ English
+    | Ja  -- ^ Japanese
     deriving (Show, Generic)
 
 -- | Defininng Category
 data Category
-    = Daedalus -- ^ Frontend
-    | Cardano  -- ^ Cardano
-    | Backend  -- ^ Backend/wallet
-    | Core     -- ^ Core
-    | Network  -- ^ Network
+    = Daedalus  -- ^ Frontend
+    | Cardano   -- ^ Cardano
+    | Backend   -- ^ Backend/wallet
+    | Core      -- ^ Core
+    | Network   -- ^ Network
     deriving (Show, Generic)
 
 type KnowledgeDescription = Record
