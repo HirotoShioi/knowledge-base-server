@@ -23,7 +23,7 @@ import           RIO.Time (UTCTime)
 data Locale
     = En  -- ^ English
     | Ja  -- ^ Japanese
-    deriving (Show, Generic)
+    deriving (Show, Generic, Eq)
 
 -- | Defininng Category
 data Category
@@ -32,7 +32,7 @@ data Category
     | Backend   -- ^ Backend/wallet
     | Core      -- ^ Core
     | Network   -- ^ Network
-    deriving (Show, Generic)
+    deriving (Show, Generic, Eq)
 
 type KnowledgeDescription = Record
     '[ "locale"   >: Locale  -- ^ Locale of the description
