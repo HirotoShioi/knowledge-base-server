@@ -3,26 +3,17 @@ FROM heroku/heroku:16
 ENV LANG C.UTF-8
 
 # Install required packages.
-RUN apt-get update
-RUN apt-get upgrade -y --assume-yes
-# Install packages for stack and ghc.
-RUN ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib/libstdc++.so
-
-RUN apt-get install -y --assume-yes xz-utils gcc libgmp-dev zlib1g-dev g++
-# Install convenience utilities, like tree, ping, and vim.
-RUN apt-get install -y --assume-yes tree iputils-ping vim-nox
-
-
-# Remove apt caches to reduce the size of our container.
-RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+    && apt-get upgrade -y --assume-yes \
+    && ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /usr/lib/libstdc++.so \
+    && apt-get install -y --assume-yes xz-utils gcc libgmp-dev zlib1g-dev g++ tree iputils-ping vim-nox \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install stack to /opt/stack/bin
-RUN mkdir -p /opt/stack/bin
-RUN curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C /opt/stack/bin '*/stack'
-
-# Create directories.
-RUN mkdir -p /opt/cardano-knowledgebase-server/src
-RUN mkdir -p /opt/cardano-knowledgebase-server/bin
+RUN mkdir -p /opt/stack/bin \
+    && mkdir -p /opt/cardano-knowledgebase-server/src \
+    && mkdir -p /opt/cardano-knowledgebase-server/bin \
+    && curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C /opt/stack/bin '*/stack'
 
 # Set /src as an working directory
 WORKDIR /opt/cardano-knowledgebase-server/src
@@ -50,8 +41,8 @@ COPY ./doc /opt/cardano-knowledgebase-server/bin/doc
 RUN rm -rf /opt/cardano-knowledgebase-server/src
 
 # Add the apiuser and setup their PATH
-RUN useradd -ms /bin/bash apiuser
-RUN chown -R apiuser:apiuser /opt/cardano-knowledgebase-server
+RUN useradd -ms /bin/bash apiuser \
+    && chown -R apiuser:apiuser /opt/cardano-knowledgebase-server
 USER apiuser
 
 # Set working directory
