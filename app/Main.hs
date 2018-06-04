@@ -115,7 +115,8 @@ createNew templatePath dirPath filename = do
         createDirectoryIfMissing True filePath
         mapM_ (\name -> copyFile
                           (templatePath <> "/" <> name)
-                          (dirPath <> filename <> "/" <> name)) ds
+                          (dirPath <> filename <> "/" <> name))
+                          ds
         sayString $ "Created new file at: " <> filePath
 
 main :: IO ()
