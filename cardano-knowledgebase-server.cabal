@@ -68,20 +68,20 @@ executable cardano-knowledgebase-server-api
                       OverloadedStrings
                       TypeFamilies
 
-test-suite cardano-knowledgebase-server-test
+test-suite server-test
   type:               exitcode-stdio-1.0
   main-is:            Spec.hs
   hs-source-dirs:     test
-  ghc-options:        -O2
-                      -Wall
-                      -threaded -rtsopts -with-rtsopts=-N
+  ghc-options:        -Wall
   build-depends:      base >=4.7 && <5
                     , cardano-knowledgebase-server
+                    , extensible
+                    , hspec
+                    , QuickCheck
                     , say
                     , rio
   other-modules:      Paths_cardano_knowledgebase_server
   default-language:   Haskell2010
-
   default-extensions: NoImplicitPrelude
                       OverloadedStrings
                       TypeFamilies

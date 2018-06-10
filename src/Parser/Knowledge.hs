@@ -25,7 +25,7 @@ parseKDesc' txt = case T.lines txt of
 parseKDesc :: Text -> Parser KnowledgeDescription
 parseKDesc txt = do
     (problem, locale, solution) <- parseKDesc' txt
-    parsedLocale <- parseLocale locale
+    parsedLocale <- parseLocale $ T.strip locale
     return $ #locale   @= parsedLocale
           <: #problem  @= problem
           <: #solution @= solution

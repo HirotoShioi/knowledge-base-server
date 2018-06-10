@@ -24,7 +24,7 @@ parseQDesc' txt = case T.lines txt of
 parseQDesc :: Text -> Parser FAQDescription
 parseQDesc txt = do
     (question, locale, solution) <- parseQDesc' txt
-    parsedLocale <- parseLocale locale
+    parsedLocale <- parseLocale $ T.strip locale
     return $ #locale   @= parsedLocale
           <: #question @= question
           <: #solution @= solution
