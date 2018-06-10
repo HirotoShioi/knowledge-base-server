@@ -45,4 +45,4 @@ main = hspec $ do
     it "Should parse solution" $
         getFAQdescription sampleFAQDocument ^. #solution `shouldBe` "Sample answer\n"
   describe "Knowledge parser" $
-    it "Should parse medadata" pending
+    it "Should parse medadata" $ pendingWith "Not yet implemented"
